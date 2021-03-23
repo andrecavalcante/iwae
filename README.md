@@ -1,1 +1,1 @@
-# iwae
+# Importance Weighted Autoencoder
