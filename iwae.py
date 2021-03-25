@@ -3,7 +3,6 @@ import torch
 import torch.nn as nn
 import torchvision
 import torchvision.transforms as transforms
-import matplotlib.pyplot as plt
 
 class IWAE(nn.Module):
     def __init__(self, x_dim=784, h_dim=400):
@@ -81,12 +80,18 @@ def main():
     batch_size = 250
     x_dim = 28*28
     h_dim = 50
-    num_samples = 5
-    num_epochs = 35
+    num_samples = 50
+    num_epochs = 50
     lr = 10e-4
 
-    train_dataset = torchvision.datasets.MNIST(root='C:/Users/Andre/Dropbox/iwae',train=True, transform=transforms.ToTensor(), download=True)
+    train_dataset = torchvision.datasets.MNIST(root='./data',
+    train=True, transform=transforms.ToTensor(), download=True)
+    test_dataset = torchvision.datasets.MNIST(root='./data',
+    train=False, transform=transforms.ToTensor(), download=True)
+    
     train_loader = torch.utils.data.DataLoader(dataset=train_dataset,
+    batch_size=batch_size,shuffle=True)
+    test_loader = torch.utils.data.DataLoader(dataset=test_dataset,
     batch_size=batch_size,shuffle=True)
 
     model = IWAE(x_dim, h_dim).cuda()
@@ -103,9 +108,14 @@ def main():
 
         print('Epoch [{}/{}],  loss: {:.3f}'.format(epoch + 1, num_epochs, loss.item()))
         print('Epoch [{}/{}],  negative log-likelihood: {:.3f}'.format(epoch + 1, num_epochs, - log_px.item()))
-
-    plt.imshow(reconstructed_x[0,0].detach().cpu().numpy().reshape(28,28))
-    plt.show()
+    
+    log_px_test = []
+    with torch.no_grad():
+        for _, (images,_) in enumerate(test_loader):    
+            x = images.cuda().view(batch_size, x_dim)
+            reconstructed_x, log_px, loss = model(x, num_samples)           
+            log_px_test.append(-log_px.item())
+        print('Negative log-likelihood on test set: {:.3f}'.format( torch.mean(torch.tensor(log_px_test))))
 
 if __name__ == '__main__':
     main()
