@@ -5,7 +5,6 @@ https://arxiv.org/abs/1509.00519
 
 The code is commented regarding the equations in the paper. 
 
-
 ## Results
 
 Negative log-likelihood of test data using k importance samples. 
@@ -16,7 +15,7 @@ Negative log-likelihood of test data using k importance samples.
 5  | 81.439
 50 | 79.008
 
-# Notes: 
-1. I use the original MNIST dataset. You may want to download the binarized version of MNIST referenced in the paper in order to compare the likelihood values with those from other methodologies.
+## Notes: 
+1. I used the original MNIST dataset. In order to have a proper application of the discrete likelihood used this model, you may want to download the binarized version of MNIST referenced in the paper.
 2. At this time torchvision cannot automatically download MNIST dataset. Apparently this is a server side issue. You can however download it manually and then set the root arg of torchvision.datasets.MNIST function with the proper local dataset directory. Keep the download=True flag.
-3. I did not use the schedule for the Beta coefficient for the ADAM optimizer. 
+3. I did not use the schedule for the Beta coefficient of ADAM optimizer used in the paper.  
