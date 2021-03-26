@@ -1,9 +1,9 @@
-# Importance weighted autoencoder (IWAE)
+# Importance weighted autoencoder (IWAE) 
 
-A minimum Pytorch implementation of importance weighted autoencoder from Burda et al. (2016).
+A minimum implementation of importance weighted autoencoder from Burda et al. (2016).
 https://arxiv.org/abs/1509.00519
 
-The code is commented regarding the equations in the paper. 
+*In Pytorch.*
 
 ## Results
 
