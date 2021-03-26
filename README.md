@@ -9,11 +9,12 @@ The code is commented regarding the equations in the paper.
 
 Negative log-likelihood of test data using k importance samples. 
 
- k | Negative Log-Likelihood 
----| -----------------------
-1  | 86.886
-5  | 81.439
-50 | 79.008
+ k  | Negative Log-Likelihood 
+----| -----------------------
+1   | 86.886
+5   | 81.439
+50  | 79.008
+1000| 77.317
 
 ## Notes: 
 1. I used the original MNIST dataset. In order to have a proper application of the discrete likelihood used this model, you may want to download the binarized version of MNIST referenced in the paper.
