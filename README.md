@@ -7,7 +7,7 @@ In Pytorch.
 
 ## Results
 
-Negative log-likelihood of test data using k importance samples. 
+Negative log-likelihood of test data using k importance samples after 50 epochs. 
 
  k  | Negative Log-Likelihood 
 ----| -----------------------
