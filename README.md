@@ -3,7 +3,7 @@
 A minimum implementation of importance weighted autoencoder from Burda et al. (2016).
 https://arxiv.org/abs/1509.00519
 
-*In Pytorch.*
+In Pytorch.
 
 ## Results
 
