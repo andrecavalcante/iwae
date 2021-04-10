@@ -4,7 +4,7 @@ import torch.nn as nn
 import torchvision
 import torchvision.transforms as transforms
 
-from SequenceDataset import MyGymDataset, OpenaiGymDataset, HotMyGymDataset
+
 
 class IWAE(nn.Module):
     def __init__(self, x_dim=784, h_dim=400):
@@ -48,18 +48,18 @@ class IWAE(nn.Module):
         # size of h: (batch_size, num_samples, h_size)
         h = q_mean + q_std * torch.randn_like(q_std)
         
-         # computing mean of likelihood Bernoulli p(x|h)
+         # computing mean of a Bernoulli likelihood p(x|h)
         likelihood_mean = self.decoder_p_mean(h)
 
         # log p(x|h)
         x = x.unsqueeze(1) # unsqueeze for broadcast
-        log_px_given_h = torch.sum(x * torch.log(likelihood_mean) + (1-x) * torch.log(1 - likelihood_mean), dim=-1) # sum over num_samples
+        log_px_given_h = torch.sum(x * torch.log(likelihood_mean) + (1-x) * torch.log(1 - likelihood_mean), dim=-1) # sum over x_dim
 
         # gaussian prior p(h)
-        log_ph = torch.sum(-0.5* torch.log(torch.tensor(2*np.pi)) - torch.pow(0.5*h,2), dim=-1) # sum over num_samples
+        log_ph = torch.sum(-0.5* torch.log(torch.tensor(2*np.pi)) - torch.pow(0.5*h,2), dim=-1) # sum over h_dim
 
         # evaluation of a gaussian proposal q(h|x)
-        log_qh_given_x = torch.sum(-0.5* torch.log(torch.tensor(2*np.pi))-torch.log(q_std) - 0.5*torch.pow((h-q_mean)/q_std, 2), dim=-1)
+        log_qh_given_x = torch.sum(-0.5* torch.log(torch.tensor(2*np.pi))-torch.log(q_std) - 0.5*torch.pow((h-q_mean)/q_std, 2), dim=-1) # sum over h_dim
         
         # computing log weights 
         log_w = log_px_given_h + log_ph - log_qh_given_x
@@ -69,11 +69,11 @@ class IWAE(nn.Module):
         normalized_w =  torch.exp(log_w - M)/ torch.sum(torch.exp(log_w - M), dim=-1).unsqueeze(1) # unsqueeze for broadcast
 
         # loss signal        
-        loss = torch.sum(normalized_w.detach().data * (log_px_given_h + log_ph - log_qh_given_x), dim=-1) 
+        loss = torch.sum(normalized_w.detach().data * (log_px_given_h + log_ph - log_qh_given_x), dim=-1) # sum over num_samples
         loss = -torch.mean(loss) # mean over batchs
 
         # computing log likelihood through Log-Sum-Exp trick
-        log_px = M + torch.log((1/num_samples)*torch.sum(torch.exp(log_w - M), dim=-1))
+        log_px = M + torch.log((1/num_samples)*torch.sum(torch.exp(log_w - M), dim=-1))  # sum over num_samples
         log_px = torch.mean(log_px) # mean over batches
         
         return likelihood_mean, log_px, loss
@@ -82,13 +82,14 @@ def main():
     batch_size = 250
     x_dim = 28*28
     h_dim = 50
-    num_samples = 1000
+    num_samples = 5
     num_epochs = 50
     lr = 10e-4
 
-    train_dataset = torchvision.datasets.MNIST(root='C:/Users/Andre/Dropbox/iwae',
+    # SET YOUR MNIST DIRECTORY IF YOU HAVE IT LOCALLY
+    train_dataset = torchvision.datasets.MNIST(root='../../data/',  
     train=True, transform=transforms.ToTensor(), download=True)
-    test_dataset = torchvision.datasets.MNIST(root='C:/Users/Andre/Dropbox/iwae',
+    test_dataset = torchvision.datasets.MNIST(root='../../data/', 
     train=False, transform=transforms.ToTensor(), download=True)
     
     train_loader = torch.utils.data.DataLoader(dataset=train_dataset,
