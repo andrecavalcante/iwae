@@ -4,6 +4,8 @@ import torch.nn as nn
 import torchvision
 import torchvision.transforms as transforms
 
+from SequenceDataset import MyGymDataset, OpenaiGymDataset, HotMyGymDataset
+
 class IWAE(nn.Module):
     def __init__(self, x_dim=784, h_dim=400):
         super(IWAE, self).__init__()
@@ -80,13 +82,13 @@ def main():
     batch_size = 250
     x_dim = 28*28
     h_dim = 50
-    num_samples = 50
+    num_samples = 1000
     num_epochs = 50
     lr = 10e-4
 
-    train_dataset = torchvision.datasets.MNIST(root='./data',
+    train_dataset = torchvision.datasets.MNIST(root='C:/Users/Andre/Dropbox/iwae',
     train=True, transform=transforms.ToTensor(), download=True)
-    test_dataset = torchvision.datasets.MNIST(root='./data',
+    test_dataset = torchvision.datasets.MNIST(root='C:/Users/Andre/Dropbox/iwae',
     train=False, transform=transforms.ToTensor(), download=True)
     
     train_loader = torch.utils.data.DataLoader(dataset=train_dataset,
